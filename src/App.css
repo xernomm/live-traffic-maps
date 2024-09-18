@@ -16,7 +16,7 @@
   border: 1px solid lightgray;
   overflow: hidden;
   border-radius: 8px;
-  padding: 3px;
+  padding: 10px;
 }
 
 .search-wrapper:hover,

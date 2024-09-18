@@ -4,7 +4,7 @@ import "@tomtom-international/web-sdk-maps/dist/maps.css";
 import * as ttmaps from "@tomtom-international/web-sdk-maps";
 import { useRef, useEffect, useState } from "react";
 import tt from "@tomtom-international/web-sdk-services";
-import { FaPlus } from "react-icons/fa6";
+import { FaMinus, FaPlus } from "react-icons/fa6";
 
 function App() {
 
@@ -14,13 +14,14 @@ function App() {
   const [mapLatitude, setMapLatitude] = useState(null);
   const [query, setQuery] = useState("");
   const [result, setResult] = useState({});
+  const [zoomLevel, setZoomLevel] = useState(15);
 
   useEffect(() => {
     let map = ttmaps.map({
       key: "3mGfsROrskVchZ4JwCRdaFjFX4bxOYE8",
       container: mapElement.current,
       center: [0, 0], // default center
-      zoom: 15,
+      zoom: zoomLevel, // use the state variable for zoom level
       pitch: 50,
       style: {
         map: "basic_main",
@@ -33,11 +34,11 @@ function App() {
         trafficIncidents: true,
       },
     });
-    setMap(map);
+    setMap(map); // update the map state
     return () => {
       map.remove();
     };
-  }, []);
+  }, [zoomLevel]);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(
@@ -92,6 +93,17 @@ const ResultBox = ({ result }) => (
     {result.address.freeformAddress}, {result.address.country}
   </div>
 );
+
+const handleZoomIn = () => {
+  setZoomLevel(zoomLevel + 15);
+  map.setZoom(zoomLevel + 15);
+};
+
+const handleZoomOut = () => {
+  setZoomLevel(zoomLevel - 15);
+  map.setZoom(zoomLevel - 15);
+};
+
 return (
   <div id='root' className="App">
     <div className="control">
@@ -130,9 +142,30 @@ return (
     </div>
     <div ref={mapElement} id="map-area"></div>
     <div className='col-12 d-flex justify-content-end'>
-    <div className='col-3'>
+    <div style={{
+        position:'absolute',
+        zIndex:'999',
+        top:'80%',
+        left:'3%',
+       }} className=''>
+      
+          <div style={{
+            borderRadius:'50%',
+            backdropFilter:'blur(4px)',
+            background:'rgba(255, 255, 255, 0.463)',
+            cursor:'pointer'
+          }} className='justify-content-center border align-items-center p-2 mb-2' onClick={handleZoomIn}>
+            <FaPlus className='display-6' />
+          </div>
 
-       
+          <div style={{
+            borderRadius:'50%',
+            backdropFilter:'blur(4px)',
+            background:'rgba(255, 255, 255, 0.463)',
+            cursor:'pointer'
+          }} className='justify-content-center border align-items-center p-2 ' onClick={handleZoomOut}>
+            <FaMinus className='display-6' />
+          </div>
     </div>
     </div>
   </div>
